@@ -10,11 +10,17 @@ const handler: VercelApiHandler = async (req, res) => {
         res.status(200);
         res.setHeader('Content-Type', `text/${option.type};charset=utf8`);
         res.setHeader('Cache-Control', 'public, max-age=86400');
-        //convert here
-        var TurndownService = require('turndown');
-        var turndownService = new TurndownService();
-        turndownService.remove(['head','style','script'])
-        var markdown = turndownService.turndown(content);
+        
+        const TurndownService = require('turndown');
+        let options = {
+            headingStyle: 'atx',
+            hr: '---',
+            codeBlockStyle: 'fenced',
+            bulletListMarker: '+'
+        };
+        let turndownService = new TurndownService(options);
+        turndownService.remove(['head','style','script']);
+        const markdown = turndownService.turndown(content);
         res.end(markdown);
     } catch (error) {
         if(process.env.NODE_ENV !== 'production') {
